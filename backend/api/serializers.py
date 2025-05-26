@@ -12,12 +12,13 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['status', 'created_at', 'updated_at', 'user']
 
-    def create(self, validated_data):
-        task = Task(**validated_data)
+    def update(self, instance, validated_data):
+        user = validated_data.get('user')
+        if user:
+            instance.user = user
+            validated_data.pop('user')
 
-        task.save()
-
-        return task
+        return super().update(instance, validated_data)
 
 class UserRegisterSerializer(ModelSerializer):
     class Meta:
