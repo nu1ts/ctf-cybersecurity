@@ -22,13 +22,10 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-root --only main
 
 COPY backend/ /app/backend/
-
 COPY frontend/ /app/frontend/
 
 WORKDIR /app/frontend
-
 RUN npm install
-
 RUN npm run build
 
 RUN mkdir -p /app/backend/static
@@ -36,6 +33,9 @@ RUN cp -r /app/frontend/build/* /app/backend/static/
 
 WORKDIR /app
 
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["gunicorn", "todo_api.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+ENTRYPOINT ["/bin/bash", "-c", "/app/entrypoint.sh"]

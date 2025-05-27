@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'secret'
+SECRET_KEY = 'django-insecure-^0v-_b-fymy)_h@%269ouo)nh3et+&2j==4jow)@x=#rt4%dke'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'corsheaders',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt'
 ]
 
 
@@ -67,6 +67,10 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'To Do API',
     'DESCRIPTION': 'API для списка дел',
     'VERSION': '1.0.0',
+}
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": "secret",
 }
 
 MIDDLEWARE = [

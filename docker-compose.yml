@@ -8,3 +8,15 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app/backend
+
+  frontend:
+    working_dir: /app/frontend
+    build:
+      context: .
+    command: npm start
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - web

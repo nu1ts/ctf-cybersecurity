@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.serializers import RegisterView
 from api.views import TaskListCreateAPIView, TaskDetailUpdateDeleteAPIView, TaskCompleteAPIView, \
-    TaskUncompleteAPIView
+    TaskUncompleteAPIView, CustomTokenObtainPairView
 
 
 def redirect_to_docs(request):
@@ -32,7 +32,7 @@ urlpatterns = [
     path('', redirect_to_docs),
     path('admin/', admin.site.urls),
     path('api/register/', RegisterView.as_view(), name='register'),
-    path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/tasks/', TaskListCreateAPIView.as_view(), name='task-list-create'),
     path('api/tasks/<int:pk>/', TaskDetailUpdateDeleteAPIView.as_view(), name='task-detail-update-delete'),

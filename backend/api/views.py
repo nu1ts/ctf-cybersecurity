@@ -5,8 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, CustomTokenObtainPairSerializer
+
 
 class TaskListCreateAPIView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
@@ -73,3 +76,5 @@ class TaskUncompleteAPIView(APIView):
         task.save()
         return Response(status=status.HTTP_200_OK)
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

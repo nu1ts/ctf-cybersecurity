@@ -2,6 +2,8 @@
 from rest_framework import serializers, generics
 from rest_framework.permissions import AllowAny
 from rest_framework.serializers import ModelSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import Task
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -35,3 +37,13 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = UserRegisterSerializer
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token["role"] = "admin" if user.is_superuser else "user"
+        token["username"] = user.username
+        return token
