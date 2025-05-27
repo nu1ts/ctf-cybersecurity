@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+﻿#!/bin/sh
 
 echo "[*] Применяем миграции..."
 python /app/backend/manage.py migrate

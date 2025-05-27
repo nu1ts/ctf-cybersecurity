@@ -1,41 +1,30 @@
-﻿FROM python:3.12-slim
-
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
-
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-ENV PATH="/root/.local/bin:$PATH"
-
-WORKDIR /app
-
-COPY pyproject.toml poetry.lock* /app/
-
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-root --only main
-
-COPY backend/ /app/backend/
-COPY frontend/ /app/frontend/
+﻿FROM node:20 AS frontend-builder
 
 WORKDIR /app/frontend
+COPY frontend/package*.json ./
 RUN npm install
+COPY frontend/ ./
 RUN npm run build
 
-RUN mkdir -p /app/backend/static
-RUN cp -r /app/frontend/build/* /app/backend/static/
+FROM python:3.12-slim
 
-WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    build-essential curl git dos2unix && \
+    rm -rf /var/lib/apt/lists/*
 
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
+
+WORKDIR /app/backend
+
+COPY pyproject.toml poetry.lock* ./
+RUN poetry config virtualenvs.create false && poetry install --no-root --only main
+
+COPY backend/ ./
+COPY --from=frontend-builder /app/frontend/build /app/backend/static
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+
+RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
-
-ENTRYPOINT ["/bin/bash", "-c", "/app/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]

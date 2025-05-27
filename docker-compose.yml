@@ -1,22 +1,22 @@
 ﻿version: '3.8'
 
 services:
-  web:
-    build: .
+  backend:
+    build:
+      context: .
     ports:
       - "8001:8000"
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app/backend
+    depends_on:
+      - frontend
 
   frontend:
-    working_dir: /app/frontend
     build:
       context: .
-    command: npm start
+      target: frontend-builder
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app/frontend
-    depends_on:
-      - web
+    working_dir: /app/frontend
+    command: npm start
